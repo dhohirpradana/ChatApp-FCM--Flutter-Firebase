@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:chat_bubbles/chat_bubbles.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_chat/utils/behavior.dart';
