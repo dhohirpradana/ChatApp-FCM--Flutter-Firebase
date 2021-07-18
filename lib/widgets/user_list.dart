@@ -26,6 +26,8 @@ class UserList extends StatelessWidget {
                   final name = users['name'];
                   final email = users['email'];
                   final onesignal = users['onesignal'];
+                  final photo = users['photo'];
+                  final status = users['status'];
                   final docID = snapshot.data!.docs[index].id;
                   return (docID == FirebaseAuth.instance.currentUser!.uid)
                       ? const SizedBox()
@@ -35,6 +37,16 @@ class UserList extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                           child: ListTile(
+                            // trailing: const Icon(
+                            //   MdiIcons.messageText,
+                            //   color: Colors.red,
+                            // ),
+                            leading: CircleAvatar(
+                              backgroundColor: Colors.transparent,
+                              backgroundImage: NetworkImage(
+                                photo,
+                              ),
+                            ),
                             onTap: () {
                               Navigator.push(
                                   context,
@@ -42,6 +54,9 @@ class UserList extends StatelessWidget {
                                       builder: (context) => ChatScreen(
                                             uid: docID,
                                             onesignal: onesignal,
+                                            photo: photo,
+                                            nama: name,
+                                            status: status,
                                           )));
                             },
                             title: Text(name),

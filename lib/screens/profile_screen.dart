@@ -1,24 +1,59 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_chat/utils/auth.dart';
 import 'package:fire_chat/widgets/custom_color.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fire_chat/utils/string_cap_extension.dart';
+import 'package:flutter/services.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  final TextEditingController _controller = TextEditingController();
+  Future<void> _displayTextInputDialog(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Ubah status'),
+            content: TextField(
+              maxLengthEnforcement: MaxLengthEnforcement.enforced,
+              maxLength: 18,
+              controller: _controller,
+              decoration: const InputDecoration(hintText: "tulis status..."),
+            ),
+            actions: [
+              Row(
+                children: [
+                  Expanded(
+                      child: ElevatedButton(
+                          onPressed: () {
+                            if (_controller.text.isNotEmpty) {
+                              Auth.updateStatus(status: _controller.text)
+                                  .then((value) {
+                                Navigator.pop(context);
+                              });
+                            }
+                          },
+                          child: const Text('SIMPAN'))),
+                ],
+              )
+            ],
+          );
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          // Image.asset(
-          //   'assets/image/bg.jpg',
-          //   fit: BoxFit.cover,
-          //   height: double.infinity,
-          //   width: double.infinity,
-          //   alignment: Alignment.center,
-          // ),
           Container(
             // color: const Color(0xff74b9ff),
             decoration: BoxDecoration(
@@ -100,20 +135,6 @@ class ProfileScreen extends StatelessWidget {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      // Row(
-                      //   children: [
-                      //     Expanded(
-                      //       child: ElevatedButton(
-                      //           onPressed: () {
-                      //             FirebaseAuth.instance.sendPasswordResetEmail(
-                      //                 email: FirebaseAuth
-                      //                     .instance.currentUser!.email
-                      //                     .toString());
-                      //           },
-                      //           child: const Text('Reset password')),
-                      //     ),
-                      //   ],
-                      // ),
                       Row(
                         children: [
                           Expanded(
@@ -162,9 +183,38 @@ class ProfileScreen extends StatelessWidget {
                       .capitalizeFirstofEach,
                   style: const TextStyle(fontSize: 26),
                 ),
-                Text(
-                  FirebaseAuth.instance.currentUser!.email.toString(),
-                  style: const TextStyle(fontSize: 16, color: Colors.black54),
+                StreamBuilder<QuerySnapshot>(
+                  stream:
+                      Auth.readStatus(FirebaseAuth.instance.currentUser!.email),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData || snapshot.data != null) {
+                      final status = snapshot.data!.docs[0]['status'];
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            status.toString(),
+                            style: const TextStyle(
+                                fontSize: 16, color: Colors.black87),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                _displayTextInputDialog(context);
+                              },
+                              child: const Icon(
+                                MdiIcons.squareEditOutline,
+                                color: Colors.black54,
+                                size: 16,
+                              ),
+                            ),
+                          )
+                        ],
+                      );
+                    }
+                    return const SizedBox();
+                  },
                 ),
               ],
             ),

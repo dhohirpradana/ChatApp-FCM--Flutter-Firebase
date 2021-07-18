@@ -31,7 +31,8 @@ class Auth {
       "photo": user.photoURL,
       "time": now,
       "onesignal": onesignal,
-      "state": 1
+      "state": 1,
+      "status": "no status"
     };
 
     await documentReferencer.set(data);
@@ -67,6 +68,22 @@ class Auth {
   static Stream<QuerySnapshot> readUser() {
     CollectionReference chatsCollection = _firestore.collection('user');
     return chatsCollection.snapshots();
+  }
+
+  static Stream<QuerySnapshot> readStatus(email) {
+    Query chatsCollection =
+        _firestore.collection('user').where('email', isEqualTo: email);
+    return chatsCollection.snapshots();
+  }
+
+  static Future<void> updateStatus({required String status}) async {
+    DocumentReference documentReferencer = _mainCollection.doc(userUid);
+    Map<String, dynamic> data = <String, dynamic>{
+      "status": status,
+    };
+    await documentReferencer.update(data);
+    // .whenComplete(() => (){})
+    // .catchError((e) => print(e));
   }
 
   static signOut() async {

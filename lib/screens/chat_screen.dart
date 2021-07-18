@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_chat/utils/behavior.dart';
 import 'package:fire_chat/utils/onesignal.dart';
 import 'package:fire_chat/utils/store.dart';
-import 'package:fire_chat/widgets/appbar_title.dart';
+import 'package:fire_chat/widgets/appbar_title_chat.dart';
 import 'package:fire_chat/widgets/custom_color.dart';
 import 'package:fire_chat/widgets/loading.dart';
 import 'package:fire_chat/widgets/something_wrong.dart';
@@ -13,9 +13,15 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class ChatScreen extends StatefulWidget {
-  final String uid, onesignal;
-  const ChatScreen({Key? key, required this.uid, required this.onesignal})
-      : super(key: key);
+  final String uid, onesignal, photo, nama, status;
+  const ChatScreen({
+    Key? key,
+    required this.uid,
+    required this.onesignal,
+    required this.photo,
+    required this.nama,
+    required this.status,
+  }) : super(key: key);
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -40,7 +46,11 @@ class _ChatScreenState extends State<ChatScreen> {
     );
     return Scaffold(
         backgroundColor: CustomColor.wetAsphalt,
-        appBar: const AppBarTitleWidget(),
+        appBar: AppBarTitleChatWidget(
+          url: widget.photo,
+          nama: widget.nama,
+          status: widget.status,
+        ),
         body: Stack(
           children: [
             Padding(
@@ -53,12 +63,13 @@ class _ChatScreenState extends State<ChatScreen> {
                   } else if (snapshot.hasData || snapshot.data != null) {
                     return ScrollConfiguration(
                         behavior: MyBehavior(),
-                        child: ListView.separated(
+                        child: ListView.builder(
                           controller: _scrollController,
                           // reverse: true,
+                          cacheExtent: 10,
                           shrinkWrap: true,
-                          separatorBuilder: (context, index) =>
-                              const SizedBox(height: 16.0),
+                          // separatorBuilder: (context, index) =>
+                          //     const SizedBox(height: 16.0),
                           itemCount: snapshot.data!.docs.length,
                           itemBuilder: (context, index) {
                             final chats = snapshot.data!.docs[index];
@@ -69,9 +80,11 @@ class _ChatScreenState extends State<ChatScreen> {
                             final isRead =
                                 (chats['is_read'] == 1) ? true : false;
                             final docID = snapshot.data!.docs[index].id;
-                            return (uid == sender && uid == receiver ||
-                                    uid == receiver && uid == sender)
+                            return (uid == sender && widget.uid == receiver ||
+                                    uid == receiver && widget.uid == sender)
                                 ? Ink(
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 2),
                                     decoration: BoxDecoration(
                                       color: Colors.transparent,
                                       borderRadius: BorderRadius.circular(8.0),
