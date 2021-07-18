@@ -69,7 +69,8 @@ class _ChatScreenState extends State<ChatScreen> {
                             final isRead =
                                 (chats['is_read'] == 1) ? true : false;
                             final docID = snapshot.data!.docs[index].id;
-                            return (uid == sender || uid == receiver)
+                            return (uid == sender && uid == receiver ||
+                                    uid == receiver && uid == sender)
                                 ? Ink(
                                     decoration: BoxDecoration(
                                       color: Colors.transparent,
