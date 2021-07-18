@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:chat_bubbles/chat_bubbles.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_chat/utils/behavior.dart';
+import 'package:fire_chat/utils/onesignal.dart';
 import 'package:fire_chat/utils/store.dart';
 import 'package:fire_chat/widgets/appbar_title.dart';
 import 'package:fire_chat/widgets/custom_color.dart';
@@ -12,8 +13,9 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class ChatScreen extends StatefulWidget {
-  final String uid;
-  const ChatScreen({Key? key, required this.uid}) : super(key: key);
+  final String uid, onesignal;
+  const ChatScreen({Key? key, required this.uid, required this.onesignal})
+      : super(key: key);
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -23,6 +25,8 @@ class _ChatScreenState extends State<ChatScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _textEditingController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+
+  final uid = FirebaseAuth.instance.currentUser!.uid;
   @override
   Widget build(BuildContext context) {
     // After 1 second, it takes you to the bottom of the ListView
@@ -57,7 +61,6 @@ class _ChatScreenState extends State<ChatScreen> {
                               const SizedBox(height: 16.0),
                           itemCount: snapshot.data!.docs.length,
                           itemBuilder: (context, index) {
-                            final uid = FirebaseAuth.instance.currentUser!.uid;
                             final chats = snapshot.data!.docs[index];
                             final sender = chats['sender'];
                             final receiver = chats['receiver'];
@@ -114,11 +117,15 @@ class _ChatScreenState extends State<ChatScreen> {
                           onPressed: () {
                             if (_textEditingController.text != '') {
                               Store.createChat(
-                                      sender: FirebaseAuth
-                                          .instance.currentUser!.uid,
+                                      sender: uid,
                                       receiver: widget.uid,
                                       msg: _textEditingController.text)
                                   .then((value) {
+                                handleSendNotification(
+                                    playerId: widget.onesignal,
+                                    msg: _textEditingController.text,
+                                    sender: FirebaseAuth
+                                        .instance.currentUser!.displayName!);
                                 _textEditingController.clear();
                                 _scrollController.animateTo(
                                   _scrollController.position.maxScrollExtent,

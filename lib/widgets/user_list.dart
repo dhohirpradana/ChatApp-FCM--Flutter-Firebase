@@ -25,6 +25,7 @@ class UserList extends StatelessWidget {
                   final users = snapshot.data!.docs[index];
                   final name = users['name'];
                   final email = users['email'];
+                  final onesignal = users['onesignal'];
                   final docID = snapshot.data!.docs[index].id;
                   return (docID == FirebaseAuth.instance.currentUser!.uid)
                       ? const SizedBox()
@@ -40,6 +41,7 @@ class UserList extends StatelessWidget {
                                   MaterialPageRoute(
                                       builder: (context) => ChatScreen(
                                             uid: docID,
+                                            onesignal: onesignal,
                                           )));
                             },
                             title: Text(name),

@@ -37,6 +37,7 @@ dependencies:
   google_sign_in: ^5.0.4
   lottie: ^1.1.0
   material_design_icons_flutter: ^5.0.5955-rc.1
+  onesignal_flutter: ^3.1.0
 
 dev_dependencies:
   flutter_test:

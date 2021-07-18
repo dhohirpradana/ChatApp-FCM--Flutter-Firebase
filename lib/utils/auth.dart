@@ -2,11 +2,22 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_chat/utils/store.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 final CollectionReference _mainCollection = _firestore.collection('user');
 
 class Auth {
+  static Future<void> refreshToken({required String onesignalUserId}) async {
+    DocumentReference documentReferencer = _mainCollection.doc(userUid);
+    Map<String, dynamic> data = <String, dynamic>{
+      "onesignal": onesignalUserId,
+    };
+    await documentReferencer.update(data);
+    // .whenComplete(() => (){})
+    // .catchError((e) => print(e));
+  }
+
   static Future<void> createUser({
     required User user,
     required String onesignal,
@@ -23,10 +34,9 @@ class Auth {
       "state": 1
     };
 
-    await documentReferencer
-        .set(data)
-        .whenComplete(() => print("User ditambah"))
-        .catchError((e) => print(e));
+    await documentReferencer.set(data);
+    // .whenComplete(() => print("User ditambah"))
+    // .catchError((e) => print(e));
   }
 
   static Future<void> signInWithGoogle() async {
@@ -45,10 +55,12 @@ class Auth {
         await FirebaseAuth.instance.signInWithCredential(credential);
     DocumentSnapshot ds =
         await _mainCollection.doc(userCredential.user!.uid).get();
+    var status = await OneSignal.shared.getDeviceState();
+    final String onesignalUserId = status!.userId!;
     if (ds.exists) {
-      print('data sudah ada');
+      refreshToken(onesignalUserId: onesignalUserId);
     } else {
-      createUser(user: userCredential.user!, onesignal: 'onesignal player id');
+      createUser(user: userCredential.user!, onesignal: onesignalUserId);
     }
   }
 

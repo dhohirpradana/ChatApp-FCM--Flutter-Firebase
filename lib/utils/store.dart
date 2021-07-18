@@ -22,10 +22,9 @@ class Store {
       "is_read": 1
     };
 
-    await documentReferencer
-        .set(data)
-        .whenComplete(() => print("Pesan terkirim"))
-        .catchError((e) => print(e));
+    await documentReferencer.set(data);
+    // .whenComplete(() => print("Pesan terkirim"))
+    // .catchError((e) => print(e));
   }
 
   static Stream<QuerySnapshot> readChat() {
@@ -58,9 +57,8 @@ class Store {
   }) async {
     DocumentReference documentReferencer = _mainCollection.doc(docId);
 
-    await documentReferencer
-        .delete()
-        .whenComplete(() => print('Chat dihapus'))
-        .catchError((e) => print(e));
+    await documentReferencer.delete();
+    // .whenComplete(() => print('Chat dihapus'))
+    // .catchError((e) => print(e));
   }
 }
