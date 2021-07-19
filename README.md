@@ -1,6 +1,9 @@
 # fire_chat
 
-A new Flutter project.
+Aplikasi chat flutter x firebase x onesignal.
+
+![alt text](https://raw.githubusercontent.com/dhohirpradana/ChatApp-FCM--Flutter-Firebase/master/Screenshot_20210719-100249112.jpg)
+
 
 ## Getting Started
 
