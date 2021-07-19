@@ -4,7 +4,7 @@ Aplikasi chat flutter x firebase x onesignal.
 
 ![alt text](https://raw.githubusercontent.com/dhohirpradana/ChatApp-FCM--Flutter-Firebase/master/Screenshot_20210719-100249112.jpg)
 ![alt text](https://github.com/dhohirpradana/ChatApp-FCM--Flutter-Firebase/blob/master/Screenshot_20210719-100308813.jpg?raw=true)
-![alt text](https://github.com/dhohirpradana/ChatApp-FCM--Flutter-Firebase/blob/master/Screenshot_20210719-100308813.jpg?raw=true)
+![alt text](https://github.com/dhohirpradana/ChatApp-FCM--Flutter-Firebase/blob/master/Screenshot_20210719-100323558.jpg?raw=true)
 ![alt text](https://github.com/dhohirpradana/ChatApp-FCM--Flutter-Firebase/blob/master/Screenshot_20210719-100336948.jpg?raw=true)
 
 ## Getting Started
