@@ -2,14 +2,15 @@ import 'dart:async';
 
 import 'package:fire_chat/screens/home_screen.dart';
 import 'package:fire_chat/screens/login_screen.dart';
-import 'package:fire_chat/screens/profile_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 FirebaseAuth auth = FirebaseAuth.instance;
-void main() {
+Future main() async {
+  await dotenv.load(fileName: ".env");
   runApp(const MyApp());
 }
 
@@ -42,7 +43,7 @@ class _MyAppState extends State<MyApp> {
     //Remove this method to stop OneSignal Debugging
     OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
 
-    OneSignal.shared.setAppId("5ecd666f-1b71-4750-bf10-97324fbc1bb2");
+    OneSignal.shared.setAppId(dotenv.env['ONESIGNAL_APP_ID']!);
 
 // The promptForPushNotificationsWithUserResponse function will show the iOS push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission
     OneSignal.shared.promptUserForPushNotificationPermission().then((accepted) {
